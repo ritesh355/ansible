@@ -1,6 +1,6 @@
 # How to install ansible into ubuntu ec2 
 
-### **step-1 Update your package index:
+### step-1 Update your package index:
 
 ```
 sudo apt update
@@ -13,20 +13,20 @@ sudo apt install software-properties-common -y
 ```
 This package lets you easily add third-party PPAs for up-to-date software.​
 
-### **step-3 Add the Ansible official PPA:
+### step-3 Add the Ansible official PPA:
 ```
 sudo add-apt-repository --yes --update ppa:ansible/ansible
 ```
 This step provides access to the latest stable Ansible version.​
 
-### **step-4 Install Ansible:
+### step-4 Install Ansible:
 ```
 sudo apt install ansible -y
 ```
 This installs Ansible and its required dependencies.​
 
 
-### **step-5 Verify the installation:
+### step-5 Verify the installation:
 
 ```
 ansible --version
