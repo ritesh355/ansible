@@ -1,0 +1,15 @@
+---
+- name: Create a file on managed nodes
+  hosts: all
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Create an empty file in /tmp directory
+      file:
+        path: /tmp/sample.txt
+        state: touch
+        owner: ansible
+        group: ansible
+        mode: '0644'
+

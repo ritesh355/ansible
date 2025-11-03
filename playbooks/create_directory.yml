@@ -1,0 +1,13 @@
+---
+- name: Create a directory on managed nodes
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create /tmp/myfolder directory
+      file:
+        path: /tmp/myfolder
+        state: directory
+        owner: ansible
+        group: ansible
+        mode: '0755'
+

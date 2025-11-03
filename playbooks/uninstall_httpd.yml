@@ -1,0 +1,15 @@
+---
+- name: Uninstall httpd from Linux node
+  hosts: linux-node
+  become: yes
+  tasks:
+    - name: Stop httpd service
+      service:
+        name: httpd
+        state: stopped
+        enabled: no
+
+    - name: Remove httpd package
+      yum:
+        name: httpd
+        state: absent

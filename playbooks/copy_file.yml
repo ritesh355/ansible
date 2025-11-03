@@ -1,0 +1,15 @@
+---
+- name: Copy a file from control node to managed nodes
+  hosts: all
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Copy test.txt to /tmp on managed nodes
+      copy:
+        src: /home/ansible/test.txt   # Path on control node
+        dest: /tmp/test.txt           # Path on managed node
+        owner: ansible
+        group: ansible
+        mode: '0644'
+

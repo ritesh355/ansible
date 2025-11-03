@@ -1,0 +1,11 @@
+---
+- name: Create a file on managed nodes
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Write hello message to file
+      copy:
+        dest: /tmp/message.txt
+        content: "Hello! This file is created by Ansible."
+
