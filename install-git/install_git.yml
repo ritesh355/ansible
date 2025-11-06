@@ -1,0 +1,20 @@
+---
+- name: Install Git on all managed nodes
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Install git on Amazon Linux / RHEL / CentOS
+      yum:
+        name: git
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Install git on Ubuntu / Debian
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
