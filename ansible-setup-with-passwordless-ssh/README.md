@@ -73,11 +73,23 @@ Then restart SSH:
 ## 🧰 Step 4 — Install Ansible (Control Node Only)
 
 On **control node** (Amazon Linux):
-
-```bash
-sudo yum install python3-pip -y
-pip3 install ansible
+**Step 1: Update system**
 ```
+sudo dnf update -y
+```
+ **Step 2: Install Python 3 and pip**
+ ```
+sudo dnf install python3 python3-pip -y
+```
+ **Step 3: Upgrade pip**
+ ```
+python3 -m pip install --upgrade pip
+```
+**Step 4: Install Ansible (user-level, no sudo needed for install)**
+```
+python3 -m pip install --user ansible
+```
+
 
 Verify:
 
