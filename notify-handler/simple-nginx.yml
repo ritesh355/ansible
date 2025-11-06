@@ -1,0 +1,19 @@
+---
+- name: Simple Nginx setup with handler (Amazon Linux)
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: present
+      notify: restart nginx
+
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+
