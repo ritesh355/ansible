@@ -2,6 +2,8 @@
 
 This guide walks you through a **clean Ansible setup** using a dedicated `ansible` user, passwordless sudo, and private key authentication (no password prompt).
 
+This setup allows your control node to manage multiple EC2 instances without entering passwords every time, making automation smooth and efficient. Perfect for beginners wanting hands-on practice with Ansible and AWS
+
 ---
 
 ## 🚀 Architecture Overview
@@ -22,17 +24,21 @@ sudo adduser ansible
 sudo passwd ansible
 ```
 
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/eysdy5hk7ubdbtiwhg30.png)
 ### Add `ansible` to sudoers:
 
 ```bash
 sudo visudo
 ```
 
-Add this line at the end:
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/vzc952loa7b7x5ctlzyp.png)
+
 
 ```
 ansible ALL=(ALL) NOPASSWD:ALL
 ```
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/n0smk8z4k4tjm12ml7vx.png)
+Add this line at the end: After adding press ctrl+o then enter then ctrl+x
 
 💡 This gives passwordless sudo access to the `ansible` user.
 
@@ -55,6 +61,8 @@ PubkeyAuthentication yes
 ChallengeResponseAuthentication no
 ```
 
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/o53ec3rk8uta27jkoedg.png)
+
 Then restart SSH:
 
 * On **Amazon Linux**:
@@ -62,6 +70,8 @@ Then restart SSH:
   ```bash
   sudo systemctl restart sshd
   ```
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/g9co2glgqphs4gnzi79y.png)
 * On **Ubuntu**:
 
   ```bash
@@ -73,29 +83,27 @@ Then restart SSH:
 ## 🧰 Step 4 — Install Ansible (Control Node Only)
 
 On **control node** (Amazon Linux):
-**Step 1: Update system**
 ```
-sudo dnf update -y
+sudo yum install python3-pip -y
 ```
- **Step 2: Install Python 3 and pip**
- ```
-sudo dnf install python3 python3-pip -y
 ```
- **Step 3: Upgrade pip**
- ```
-python3 -m pip install --upgrade pip
-```
-**Step 4: Install Ansible (user-level, no sudo needed for install)**
-```
-python3 -m pip install --user ansible
+sudo pip3 install ansible
 ```
 
+```
+ansible --version
+```
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/4c06s8kbwj35uty7q70c.png)
 
 Verify:
 
 ```bash
 ansible --version
 ```
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/qt291jq8rd5kuxh36k07.png)
+
 ## 🔑 Step 5 — Generate SSH Key Pair on Control Node
 
 Switch to `ansible` user on **control node**:
@@ -110,6 +118,7 @@ Generate SSH keys:
 ssh-keygen -t rsa -b 2048
 ```
 
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/i11fjf1c15bbrcc8lkmp.png)
 Press **Enter** for all prompts to accept defaults (no passphrase).
 
 You’ll get:
@@ -119,6 +128,7 @@ You’ll get:
  /home/ansible/.ssh/id_rsa.pub  (public key)
 ```
 
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/ptuvzggkw8mjj2jyl5r3.png)
 ---
 
 ## 📤 Step 6 — Copy SSH Key to Managed Nodes (Passwordless Setup)
@@ -129,6 +139,7 @@ Use this command on the **control node**:
 ssh-copy-id ansible@<managed_node_private_ip>
 ```
 
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/9f9crc9bu88hx4uvyw69.png)
 You’ll enter the password of the `ansible` user **only once**.
 
 Repeat for each managed node.
@@ -146,28 +157,40 @@ ssh-copy-id ansible@172.31.18.225
 ssh ansible@172.31.29.148
 ```
 
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/y84le98bz4pk0yewg3a5.png)
 If it logs in **without asking password**, passwordless SSH is working perfectly.
 
 ---
 
 ## 🧭 Step 7 — Verify Setup with Ansible Ping
 
-Create an inventory file `/home/ansible/inventory.ini`:
+Create an inventory file `/home/ansible/hosts`:
 
-```ini
-[web]
-172.31.29.148 ansible_user=ansible ansible_ssh_private_key_file=/home/ansible/.ssh/id_rsa
+use this command under **/home/ansible** directory
 
-[db]
-172.31.18.225 ansible_user=ansible ansible_ssh_private_key_file=/home/ansible/.ssh/id_rsa
 ```
+sudo vi hosts
+```
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/p7bbtzhces4lkskgx6tz.png)
+
+```
+[web]
+172.31.29.148 
+
+[dev]
+172.31.18.225 
+```
+
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/kja926uvecq28sd8w3rj.png)
 
 Now test connection:
 
 ```bash
-ansible all -i inventory.ini -m ping
+ansible all -i hosts -m ping
 ```
 
+![Image description](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/i0p0j54x4gvcv2llopes.png)
 Expected output:
 
 ```bash
@@ -202,8 +225,8 @@ Expected output:
 ## 🧩 Bonus Tip — Test with Ad Hoc Command
 
 ```bash
-ansible all -i inventory.ini -m shell -a "hostname"
-ansible all -i inventory.ini -m shell -a "uptime"
+ansible all -i hosts -m shell -a "hostname"
+ansible all -i hosts -m shell -a "uptime"
 ```
 
 If you see hostnames and uptime output — congratulations 🎉
@@ -215,5 +238,8 @@ Your **Ansible setup with private key passwordless access** is ready!
 
 * Private key (`id_rsa`) always stays on the **control node**
 * Public key (`id_rsa.pub`) is copied to managed nodes’ `~/.ssh/authorized_keys`
-* Never share or upload your private key to any other system
+* Never share or upload your private key to any other system...
 
+## ❤️ Follow My DevOps Journey
+**Ritesh Singh**  
+🌐 [LinkedIn](https://www.linkedin.com/in/ritesh-singh-092b84340/) | 📝 [Hashnode](https://ritesh-devops.hashnode.dev/) | [GITHUB](https://github.com/ritesh355/Devops-journal)
