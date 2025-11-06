@@ -38,7 +38,7 @@ ansible ALL=(ALL) NOPASSWD:ALL
 
 ---
 
-## 🔐 Step 2 — Configure SSH on Managed Nodes
+## 🔐 Step 2 — Configure SSH on (Managed+ controle) Nodes
 
 Edit `/etc/ssh/sshd_config` on **each managed node**:
 
@@ -70,7 +70,21 @@ Then restart SSH:
 
 ---
 
-## 🔑 Step 3 — Generate SSH Key Pair on Control Node
+## 🧰 Step 4 — Install Ansible (Control Node Only)
+
+On **control node** (Amazon Linux):
+
+```bash
+sudo yum install python3-pip -y
+pip3 install ansible
+```
+
+Verify:
+
+```bash
+ansible --version
+```
+## 🔑 Step 5 — Generate SSH Key Pair on Control Node
 
 Switch to `ansible` user on **control node**:
 
@@ -95,7 +109,7 @@ You’ll get:
 
 ---
 
-## 📤 Step 4 — Copy SSH Key to Managed Nodes (Passwordless Setup)
+## 📤 Step 6 — Copy SSH Key to Managed Nodes (Passwordless Setup)
 
 Use this command on the **control node**:
 
@@ -124,7 +138,7 @@ If it logs in **without asking password**, passwordless SSH is working perfectly
 
 ---
 
-## 🧭 Step 5 — Verify Setup with Ansible Ping
+## 🧭 Step 7 — Verify Setup with Ansible Ping
 
 Create an inventory file `/home/ansible/inventory.ini`:
 
@@ -157,20 +171,7 @@ Expected output:
 
 ---
 
-## 🧰 Step 6 — Install Ansible (Control Node Only)
 
-On **control node** (Amazon Linux):
-
-```bash
-sudo yum install python3-pip -y
-pip3 install ansible
-```
-
-Verify:
-
-```bash
-ansible --version
-```
 
 ---
 
