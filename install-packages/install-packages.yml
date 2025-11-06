@@ -1,0 +1,24 @@
+---
+- name: Install common packages on all managed nodes
+  hosts: all
+  become: yes
+  vars:
+    common_packages:
+      - git
+      - curl
+      - wget
+      - vim
+  tasks:
+    - name: Install packages on RedHat/CentOS/Amazon Linux
+      yum:
+        name: "{{ common_packages }}"
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Install packages on Debian/Ubuntu
+      apt:
+        name: "{{ common_packages }}"
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
